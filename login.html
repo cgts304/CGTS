@@ -1,58 +1,157 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGTS - Login Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: #f0f4f8; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        
+        .login-card { 
+            background: white; 
+            padding: 35px 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+            width: 100%; 
+            max-width: 400px; 
+            border-top: 5px solid #3498db;
+        }
+        .login-card h2 { text-align: center; color: #2c3e50; margin-bottom: 25px; font-size: 24px; }
+        
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 6px; color: #555; font-weight: 600; font-size: 14px; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: #3498db; box-shadow: 0 0 5px rgba(52,152,219,0.3); }
+        
+        .login-btn { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            width: 100%; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 10px; 
+            transition: 0.2s;
+        }
+        .login-btn:hover { background-color: #2980b9; }
+        
+        .error-msg { 
+            color: #e74c3c; 
+            background-color: #fde8e7; 
+            padding: 10px; 
+            border-radius: 6px; 
+            text-align: center; 
+            margin-top: 15px; 
+            font-size: 14px; 
+            font-weight: 600;
+            display: none; 
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .reg-link { text-align: center; margin-top: 20px; font-size: 14px; color: #666; }
+        .reg-link a { color: #2ecc71; text-decoration: none; font-weight: bold; }
+        .reg-link a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>CGTS लॉगिन पोर्टल</h2>
+        <form id="login-form">
+            <div class="input-group">
+                <label>मोबाइल नंबर / यूज़रनेम</label>
+                <input type="text" id="username" placeholder="अपना 10 अंकों का नंबर या admin लिखें" required autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>पासवर्ड (Password)</label>
+                <input type="password" id="password" placeholder="अपना पासवर्ड दर्ज करें" required>
+            </div>
+            <button type="button" class="login-btn" onclick="checkLogin()">लॉगिन करें ➜</button>
+            
+            <p class="error-msg" id="error-text"></p>
+        </form>
+        
+        <div class="reg-link">
+            नया अकाउंट बनाना है? <a href="register.html">यहाँ रजिस्ट्रेशन करें</a>
+        </div>
+    </div>
+
     <script>
+        // अगर यूजर पहले से लॉग इन है, तो उसे सीधे डैशबोर्ड पर भेजें
+        if(localStorage.getItem("isLoggedIn") === "true") {
+            window.location.href = "index.html";
+        }
+
         function checkLogin() {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
             const errorText = document.getElementById('error-text');
 
-            // एरर टेक्स्ट को शुरू में छुपा दें
+            // शुरुआत में एरर बॉक्स छुपाएं
             errorText.style.display = 'none';
 
             if (user === "" || pass === "") {
                 errorText.style.display = 'block';
-                errorText.innerText = "कृपया सभी डिटेल्स भरें!";
+                errorText.innerText = "कृपया मोबाइल नंबर और पासवर्ड दोनों भरें!";
                 return;
             }
 
-            // 1. एडमिन लॉगिन चेक
+            // 👑 1. एडमिन बाईपास लॉगिन कमांड
             if (user === "admin" && pass === "12345") {
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("role", "admin");
-                localStorage.setItem("currentUser", "Admin");
+                localStorage.setItem("currentUser", "Admin Panel");
                 window.location.href = "index.html";
                 return;
             }
 
-            // 2. मोबाइल नंबर से स्टूडेंट लॉगिन चेक
-            // हमने register.html में "user_" + mobile नंबर के नाम से डेटा सेव किया था
+            // 📱 2. स्टूडेंट लॉगिन डेटाबेस सिंक (user_mobile फॉर्मेट में)
             const savedUser = localStorage.getItem("user_" + user);
 
             if (savedUser) {
                 const userData = JSON.parse(savedUser);
                 
-                // पासवर्ड की जांच करें
+                // पासवर्ड मैचिंग एल्गोरिथ्म
                 if (userData.password === pass) {
                     
-                    // स्टेटस की जांच करें (चाहे वह userData.status में हो या सीधे सेव हुआ हो)
+                    // एडमिन अथॉरिटी स्टेटस चेक (approved या active दोनों को अनुमति देता है)
                     if (userData.status === "approved" || userData.status === "active") {
                         localStorage.setItem("isLoggedIn", "true");
                         localStorage.setItem("role", "student");
                         localStorage.setItem("currentUser", userData.name);
                         window.location.href = "index.html";
-                    } else if (userData.status === "blocked") {
+                    } 
+                    // ब्लॉक स्टेटस चेक
+                    else if (userData.status === "blocked") {
                         errorText.style.display = 'block';
-                        errorText.innerText = "आपका अकाउंट एडमिन द्वारा ब्लॉक कर दिया गया है!";
-                    } else {
+                        errorText.innerText = "🚨 आपका अकाउंट एडमिन द्वारा ब्लॉक कर दिया गया है!";
+                    } 
+                    // पेंडिंग स्टेटस चेक
+                    else {
                         errorText.style.display = 'block';
-                        errorText.innerText = "आपका अकाउंट अभी एडमिन द्वारा वेरीफाई (Activate) नहीं किया गया है।";
+                        errorText.innerText = "⏳ आपका अकाउंट अभी पेंडिंग है। एडमिन द्वारा एक्टिवेट होने का इंतज़ार करें।";
                     }
 
                 } else {
                     errorText.style.display = 'block';
-                    errorText.innerText = "गलत पासवर्ड! कृपया दोबारा जांचें।";
+                    errorText.innerText = "❌ गलत पासवर्ड! कृपया दोबारा सही पासवर्ड डालें।";
                 }
             } else {
                 errorText.style.display = 'block';
-                errorText.innerText = "यह मोबाइल नंबर रजिस्टर्ड नहीं है!";
+                errorText.innerText = "⚠️ यह मोबाइल नंबर हमारे डेटाबेस में रजिस्टर्ड नहीं है!";
             }
         }
+
+        // Enter की (Key) दबाने पर भी लॉगिन हो जाए, उसका फीचर
+        document.getElementById("password").addEventListener("keyup", function(event) {
+            if (event.key === "Enter") {
+                checkLogin();
+            }
+        });
     </script>
+</body>
+</html>
