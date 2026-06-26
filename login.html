@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGTS - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-card h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 600;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .login-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            background-color: #2980b9;
+        }
+        .error-msg {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>CGTS Login</h2>
+        <form id="login-form">
+            <div class="input-group">
+                <label>यूज़रनेम / मोबाइल नंबर</label>
+                <input type="text" id="username" placeholder="admin" required>
+            </div>
+            <div class="input-group">
+                <label>पासवर्ड</label>
+                <input type="password" id="password" placeholder="12345" required>
+            </div>
+            <button type="button" class="login-btn" onclick="checkLogin()">लॉगिन करें</button>
+            <p class="error-msg" id="error-text">गलत यूज़रनेम या पासवर्ड!</p>
+        </form>
+    </div>
+
+    <script>
+        function checkLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // यहाँ आप अपना मनपसंद Username और Password सेट कर सकते हैं
+            if (user === "admin" && pass === "12345") {
+                // लॉगिन सफल होने पर ब्राउज़र की मेमोरी में सेव करें
+                localStorage.setItem("isLoggedIn", "true");
+                // मुख्य पेज पर भेजें
+                window.location.href = "index.html";
+            } else {
+                // गलत होने पर एरर दिखाएं
+                document.getElementById('error-text').style.display = 'block';
+            }
+        }
+    </script>
+
+</body>
+</html>
+
