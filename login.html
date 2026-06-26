@@ -1,52 +1,17 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGTS - Login</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
-        .login-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        .login-card h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; margin-bottom: 5px; color: #666; font-weight: 600; }
-        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-        .login-btn { background-color: #3498db; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .error-msg { color: #e74c3c; text-align: center; margin-top: 10px; display: none; }
-        .reg-link { text-align: center; margin-top: 15px; font-size: 14px; }
-        .reg-link a { color: #2ecc71; text-decoration: none; font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <div class="login-card">
-        <h2>CGTS Login</h2>
-        <form id="login-form">
-            <div class="input-group">
-                <label>मोबाइल नंबर / यूज़रनेम</label>
-                <input type="text" id="username" placeholder="Mobile Number या admin" required>
-            </div>
-            <div class="input-group">
-                <label>पासवर्ड</label>
-                <input type="password" id="password" placeholder="Password" required>
-            </div>
-            <button type="button" class="login-btn" onclick="checkLogin()">लॉगिन करें</button>
-            <p class="error-msg" id="error-text">गलत डिटेल्स!</p>
-        </form>
-        <div class="reg-link">
-            नया अकाउंट बनाना है? <a href="register.html">यहाँ रजिस्टर करें</a>
-        </div>
-    </div>
-
-                    }
-         </div>
-
     <script>
         function checkLogin() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
             const errorText = document.getElementById('error-text');
+
+            // एरर टेक्स्ट को शुरू में छुपा दें
+            errorText.style.display = 'none';
+
+            if (user === "" || pass === "") {
+                errorText.style.display = 'block';
+                errorText.innerText = "कृपया सभी डिटेल्स भरें!";
+                return;
+            }
 
             // 1. एडमिन लॉगिन चेक
             if (user === "admin" && pass === "12345") {
@@ -58,14 +23,17 @@
             }
 
             // 2. मोबाइल नंबर से स्टूडेंट लॉगिन चेक
+            // हमने register.html में "user_" + mobile नंबर के नाम से डेटा सेव किया था
             const savedUser = localStorage.getItem("user_" + user);
 
             if (savedUser) {
                 const userData = JSON.parse(savedUser);
                 
-                // पासवर्ड मैच होने पर स्टेटस चेक करना
+                // पासवर्ड की जांच करें
                 if (userData.password === pass) {
-                    if (userData.status === "approved") {
+                    
+                    // स्टेटस की जांच करें (चाहे वह userData.status में हो या सीधे सेव हुआ हो)
+                    if (userData.status === "approved" || userData.status === "active") {
                         localStorage.setItem("isLoggedIn", "true");
                         localStorage.setItem("role", "student");
                         localStorage.setItem("currentUser", userData.name);
@@ -75,11 +43,12 @@
                         errorText.innerText = "आपका अकाउंट एडमिन द्वारा ब्लॉक कर दिया गया है!";
                     } else {
                         errorText.style.display = 'block';
-                        errorText.innerText = "आपका अकाउंट अभी एडमिन द्वारा वेरीफाई नहीं किया गया है।";
+                        errorText.innerText = "आपका अकाउंट अभी एडमिन द्वारा वेरीफाई (Activate) नहीं किया गया है।";
                     }
+
                 } else {
                     errorText.style.display = 'block';
-                    errorText.innerText = "गलत पासवर्ड!";
+                    errorText.innerText = "गलत पासवर्ड! कृपया दोबारा जांचें।";
                 }
             } else {
                 errorText.style.display = 'block';
@@ -87,8 +56,3 @@
             }
         }
     </script>
-</body>
-</html>
-
-</body>
-</html>
