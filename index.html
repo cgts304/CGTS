@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
+    <script>
+    // चेक करें कि क्या यूजर ने लॉगिन किया है
+    if (localStorage.getItem("isLoggedIn") !== "true") {
+        // अगर लॉगिन नहीं है, तो उसे जबर्दस्ती लॉगिन पेज पर भेज दें
+        window.location.href = "login.html";
+    }
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CGTS - Online Test Series</title>
