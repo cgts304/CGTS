@@ -24,8 +24,8 @@
         <h2>CGTS Login</h2>
         <form id="login-form">
             <div class="input-group">
-                <label>यूज़रनेम / मोबाइल नंबर</label>
-                <input type="text" id="username" placeholder="Username या Mobile" required>
+                <label>मोबाइल नंबर / यूज़रनेम</label>
+                <input type="text" id="username" placeholder="Mobile Number या admin" required>
             </div>
             <div class="input-group">
                 <label>पासवर्ड</label>
@@ -45,7 +45,7 @@
             const pass = document.getElementById('password').value;
             const errorText = document.getElementById('error-text');
 
-            // 1. एडमिन लॉगिन (Direct Entry)
+            // 1. एडमिन लॉगिन
             if (user === "admin" && pass === "12345") {
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("role", "admin");
@@ -54,14 +54,13 @@
                 return;
             }
 
-            // 2. स्टूडेंट लॉगिन चेक
+            // 2. मोबाइल नंबर से स्टूडेंट लॉगिन चेक
             const savedUser = localStorage.getItem("user_" + user);
 
             if (savedUser) {
                 const userData = JSON.parse(savedUser);
                 
                 if (userData.password === pass) {
-                    // यहाँ चेक होगा कि एडमिन ने अप्रूव किया है या नहीं
                     if (userData.status === "approved") {
                         localStorage.setItem("isLoggedIn", "true");
                         localStorage.setItem("role", "student");
@@ -69,7 +68,7 @@
                         window.location.href = "index.html";
                     } else {
                         errorText.style.display = 'block';
-                        errorText.innerText = "आपका अकाउंट अभी एडमिन द्वारा वेरीफाई नहीं किया गया है। कृपया प्रतीक्षा करें!";
+                        errorText.innerText = "आपका अकाउंट अभी एडमिन द्वारा वेरीफाई नहीं किया गया है।";
                     }
                 } else {
                     errorText.style.display = 'block';
@@ -77,7 +76,7 @@
                 }
             } else {
                 errorText.style.display = 'block';
-                errorText.innerText = "यह यूज़रनेम रजिस्टर्ड नहीं है!";
+                errorText.innerText = "यह मोबाइल नंबर रजिस्टर्ड नहीं है!";
             }
         }
     </script>
