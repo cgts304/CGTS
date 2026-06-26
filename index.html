@@ -3,142 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGTS - Home</title>
+    <title>CGTS - Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f4f7f6; color: #333; }
+        body { background-color: #f4f7f6; color: #333; padding-bottom: 50px; }
         header { background-color: #2c3e50; color: white; padding: 15px; text-align: center; position: relative;}
-        .container { max-width: 800px; margin: 30px auto; padding: 20px; }
-        .test-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #3498db; }
-        .btn { display: inline-block; background: #3498db; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; width: 100%; text-align: center; }
+        .container { max-width: 900px; margin: 30px auto; padding: 20px; }
         
-        /* 👑 एडमिन पैनल स्टाइलिंग */
-        #admin-panel { display: none; background: white; padding: 20px; border-radius: 8px; margin-top: 30px; border: 2px solid #e74c3c; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; font-size: 14px; }
-        th { background-color: #2c3e50; color: white; }
+        /* Dashboard Styles */
+        .exam-block { background: white; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 4px solid #2c3e50; }
+        .exam-title { color: #2c3e50; font-size: 22px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* बटन कलर्स */
-        .approve-btn { background: #2ecc71; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-right: 5px; }
-        .approve-btn:hover { background: #27ae60; }
-        .reject-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; }
-        .reject-btn:hover { background: #c0392b; }
+        .subject-block { background: #f9fbfd; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #3498db; }
+        .subject-title { color: #3498db; font-size: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .test-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+        @media(min-width: 600px) { .test-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .test-item { background: white; padding: 12px; border: 1px solid #e2e8f0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .test-link { background: #2ecc71; color: white; text-decoration: none; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; }
+        
+        /* Admin Form Styles */
+        .admin-section { display: none; background: #fff; padding: 20px; border-radius: 8px; margin-top: 40px; border: 2px dashed #e74c3c; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .admin-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .del-btn { background: #e74c3c; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-left: 10px; }
+        
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f8f9fa; }
+        .approve-btn { background: #2ecc71; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
     </style>
     <script>
-        if (localStorage.getItem("isLoggedIn") !== "true") {
-            window.location.href = "login.html";
-        }
+        if (localStorage.getItem("isLoggedIn") !== "true") { window.location.href = "login.html"; }
     </script>
 </head>
 <body>
 
     <header>
-        <h1>CGTS Test Series</h1>
+        <h1>CGTS Portal</h1>
         <button onclick="logout()" style="position:absolute; right:15px; top:15px; background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:bold;">Logout</button>
     </header>
 
     <div class="container">
-        <h2>नमस्ते, <span id="user-display"></span></h2>
+        <h2>नमस्ते, <span id="user-display"></span> 👋</h2>
+        <p style="color: #666; margin-bottom: 20px;">आपके उपलब्ध कोर्सेज और टेस्ट्स नीचे दिए गए हैं:</p>
         
-        <div style="margin-top:20px;">
-            <div class="test-card">
-                <h3>General Knowledge - Mock Test 1</h3>
-                <p>कुल प्रश्न: 3 | समय: 10 मिनट</p>
-                <a href="quiz.html" class="btn">Start Test</a>
-            </div>
-        </div>
+        <div id="student-dashboard"></div>
 
-        <div id="admin-panel">
-            <h3 style="color:#e74c3c; margin-bottom: 5px;">👑 एड民 अथॉरिटी पैनल</h3>
-            <p style="font-size: 14px; color: #666;">यहाँ से नए स्टूडेंट्स का मोबाइल नंबर वेरीफाई करें या रिजेक्ट करें:</p>
+        <div class="admin-section" id="admin-panel">
+            <h3 style="color:#e74c3c; margin-bottom: 15px;">👑 एडमिन मैनेजमेंट पैनल</h3>
+            
+            <div class="exam-block" style="border-top:4px solid #e74c3c">
+                <h4>1. नई परीक्षा / कोर्स जोड़ें</h4>
+                <div class="form-group" style="margin-top:10px;">
+                    <input type="text" id="new-exam-name" placeholder="उदा. Assistant Teacher Recruitment">
+                    <button class="admin-btn" style="background:#3498db; margin-top:10px;" onclick="addExam()">परीक्षा जोड़ें</button>
+                </div>
+            </div>
+
+            <div class="exam-block" style="border-top:4px solid #e74c3c">
+                <h4>2. परीक्षा में विषय (Subject) जोड़ें</h4>
+                <div class="form-group" style="margin-top:10px;">
+                    <label>परीक्षा चुनें:</label>
+                    <select id="exam-select-for-sub"></select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="new-sub-name" placeholder="उदा. Mathematics, GK">
+                    <button class="admin-btn" style="background:#2ecc71; margin-top:10px;" onclick="addSubject()">विषय जोड़ें</button>
+                </div>
+            </div>
+
+            <div class="exam-block" style="border-top:4px solid #e74c3c">
+                <h4>3. विषय में टेस्ट (Test) जोड़ें</h4>
+                <div class="form-group" style="margin-top:10px;">
+                    <label>विषय चुनें:</label>
+                    <select id="sub-select-for-test"></select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="new-test-name" placeholder="उदा. Mock Test 1">
+                    <button class="admin-btn" style="margin-top:10px;" onclick="addTest()">टेस्ट जोड़ें</button>
+                </div>
+            </div>
+
+            <h4 style="margin-top:20px; color:#2c3e50;">4. स्टूडेंट्स अथॉरिटी (Verify/Reject)</h4>
             <table>
                 <thead>
-                    <tr>
-                        <th>नाम</th>
-                        <th>मोबाइल नंबर</th>
-                        <th>स्टेटस</th>
-                        <th>अथॉरिटी एक्शन</th>
-                    </tr>
+                    <tr><th>नाम</th><th>मोबाइल</th><th>स्टेटस</th><th>एक्शन</th></tr>
                 </thead>
-                <tbody id="student-table-body">
-                    </tbody>
+                <tbody id="student-table-body"></tbody>
             </table>
         </div>
     </div>
 
     <script>
         document.getElementById("user-display").innerText = localStorage.getItem("currentUser");
+        const isAdmin = localStorage.getItem("role") === "admin";
 
-        // अगर एडमिन लॉगिन है तभी पैनल दिखेगा
-        if(localStorage.getItem("role") === "admin") {
+        // डिफ़ॉल्ट डेटा स्ट्रक्चर अगर मेमोरी खाली हो
+        if(!localStorage.getItem("cgts_exams")) {
+            const defaultExams = [
+                {
+                    id: "exam_1",
+                    name: "Assistant Teacher Recruitment",
+                    subjects: [
+                        { id: "sub_1", name: "General Knowledge", tests: [{ id: "test_1", name: "GK Mock Test 1" }] },
+                        { id: "sub_2", name: "Mathematics", tests: [] }
+                    ]
+                }
+            ];
+            localStorage.setItem("cgts_exams", JSON.stringify(defaultExams));
+        }
+
+        let examData = JSON.parse(localStorage.getItem("cgts_exams"));
+
+        // पेज लोड होने पर सब कुछ सेट करें
+        if(isAdmin) {
             document.getElementById("admin-panel").style.display = "block";
+            loadAdminSelects();
             loadStudents();
+        }
+        renderDashboard();
+
+        // 🟢 डैशबोर्ड रेंडर करने का फंक्शन
+        function renderDashboard() {
+            const dashboard = document.getElementById("student-dashboard");
+            dashboard.innerHTML = "";
+
+            examData.forEach(exam => {
+                let examHTML = `<div class="exam-block">
+                    <div class="exam-title">
+                        <span>📋 ${exam.name}</span>
+                        ${isAdmin ? `<button class="del-btn" onclick="deleteExam('${exam.id}')">Delete Exam</button>` : ''}
+                    </div>`;
+
+                exam.subjects.forEach(sub => {
+                    examHTML += `<div class="subject-block">
+                        <div class="subject-title">
+                            <span>📚 ${sub.name}</span>
+                            ${isAdmin ? `<button class="del-btn" onclick="deleteSubject('${exam.id}', '${sub.id}')">Delete Subject</button>` : ''}
+                        </div>
+                        <div class="test-grid">`;
+
+                    sub.tests.forEach(test => {
+                        examHTML += `<div class="test-item">
+                            <span>📝 ${test.name}</span>
+                            <div>
+                                <a href="quiz.html?testId=${test.id}" class="test-link">Start</a>
+                                ${isAdmin ? `<button class="del-btn" onclick="deleteTest('${exam.id}', '${sub.id}', '${test.id}')">X</button>` : ''}
+                            </div>
+                        </div>`;
+                    });
+
+                    if(sub.tests.length === 0) examHTML += `<p style="color:#999; font-size:14px;">कोई टेस्ट उपलब्ध नहीं है।</p>`;
+                    examHTML += `</div></div>`;
+                });
+
+                if(exam.subjects.length === 0) examHTML += `<p style="color:#999; font-size:14px;">कोई विषय उपलब्ध नहीं है।</p>`;
+                examHTML += `</div>`;
+                dashboard.innerHTML += examHTML;
+            });
+        }
+
+        // 👑 एडमिन फंक्शन्स: ऐड करना
+        function addExam() {
+            const name = document.getElementById("new-exam-name").value.trim();
+            if(!name) return alert("नाम लिखें!");
+            examData.push({ id: "exam_" + Date.now(), name: name, subjects: [] });
+            saveAndRefresh();
+        }
+
+        function addSubject() {
+            const examId = document.getElementById("exam-select-for-sub").value;
+            const name = document.getElementById("new-sub-name").value.trim();
+            if(!name || !examId) return alert("डिटेल्स सही भरें!");
+            
+            const exam = examData.find(e => e.id === examId);
+            exam.subjects.push({ id: "sub_" + Date.now(), name: name, tests: [] });
+            saveAndRefresh();
+        }
+
+        function addTest() {
+            const subId = document.getElementById("sub-select-for-test").value;
+            const name = document.getElementById("new-test-name").value.trim();
+            if(!name || !subId) return alert("डिटेल्स सही भरें!");
+
+            examData.forEach(exam => {
+                const sub = exam.subjects.find(s => s.id === subId);
+                if(sub) {
+                    sub.tests.push({ id: "test_" + Date.now(), name: name });
+                }
+            });
+            saveAndRefresh();
+        }
+
+        // 👑 एडमिन फंक्शन्स: डिलीट करना
+        function deleteExam(id) {
+            if(confirm("पूरी परीक्षा डिलीट करें?")) {
+                examData = examData.filter(e => e.id !== id);
+                saveAndRefresh();
+            }
+        }
+
+        function deleteSubject(examId, subId) {
+            if(confirm("यह विषय डिलीट करें?")) {
+                const exam = examData.find(e => e.id === examId);
+                exam.subjects = exam.subjects.filter(s => s.id !== subId);
+                saveAndRefresh();
+            }
+        }
+
+        function deleteTest(examId, subId, testId) {
+            if(confirm("यह टेस्ट डिलीट करें?")) {
+                const exam = examData.find(e => e.id === examId);
+                const sub = exam.subjects.find(s => s.id === subId);
+                sub.tests = sub.tests.filter(t => t.id !== testId);
+                saveAndRefresh();
+            }
+        }
+
+        function saveAndRefresh() {
+            localStorage.setItem("cgts_exams", JSON.stringify(examData));
+            renderDashboard();
+            if(isAdmin) loadAdminSelects();
+        }
+
+        function loadAdminSelects() {
+            const examSelect = document.getElementById("exam-select-for-sub");
+            const subSelect = document.getElementById("sub-select-for-test");
+            examSelect.innerHTML = ""; subSelect.innerHTML = "";
+
+            examData.forEach(e => {
+                examSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
+                e.subjects.forEach(s => {
+                    subSelect.innerHTML += `<option value="${s.id}">${e.name} -> ${s.name}</option>`;
+                });
+            });
         }
 
         function loadStudents() {
             const tbody = document.getElementById("student-table-body");
             tbody.innerHTML = "";
-            let hasRecords = false;
-
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key.startsWith("user_")) {
-                    hasRecords = true;
                     const userData = JSON.parse(localStorage.getItem(key));
-                    
-                    // स्टेटस के हिसाब से रंग तय करना
-                    let statusColor = "orange";
-                    let statusText = "पेंडिंग (Pending)";
-                    if (userData.status === "approved") {
-                        statusColor = "green";
-                        statusText = "वेरीफाइड (Verified)";
-                    }
-
-                    const row = `<tr>
-                        <td><strong>${userData.name}</strong></td>
+                    tbody.innerHTML += `<tr>
+                        <td>${userData.name}</td>
                         <td>${userData.username}</td>
-                        <td style="color: ${statusColor}; font-weight:bold;">${statusText}</td>
+                        <td style="color:${userData.status === 'pending' ? 'orange':'green'}; font-weight:bold;">${userData.status}</td>
                         <td>
-                            ${userData.status === 'pending' ? 
-                            `<button class="approve-btn" onclick="verifyStudent('${key}')">Verify</button>
-                             <button class="reject-btn" onclick="rejectStudent('${key}')">Reject</button>` : 
-                            `✅ चालू है | <button class="reject-btn" style="padding:3px 8px; font-size:12px;" onclick="rejectStudent('${key}')">Block</button>`}
+                            ${userData.status === 'pending' ? `<button class="approve-btn" onclick="verifyStudent('${key}')">Verify</button>` : '✅'}
+                            <button class="del-btn" onclick="localStorage.removeItem('${key}'); loadStudents();">Reject</button>
                         </td>
                     </tr>`;
-                    tbody.innerHTML += row;
                 }
             }
-
-            if(!hasRecords) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">अभी कोई नया रजिस्ट्रेशन नहीं हुआ है।</td></tr>`;
-            }
         }
 
-        // 1. स्टूडेंट को Approve/Verify करने का फंक्शन
         function verifyStudent(key) {
-            const userData = JSON.parse(localStorage.getItem(key));
-            userData.status = "approved"; 
-            localStorage.setItem(key, JSON.stringify(userData)); 
-            alert(userData.name + " का अकाउंट चालू (Verify) कर दिया गया है!");
-            loadStudents(); 
-        }
-
-        // 2. स्टूडेंट को Reject/Delete करने का फंक्शन
-        function rejectStudent(key) {
-            const userData = JSON.parse(localStorage.getItem(key));
-            // कन्फर्मेशन पूछें ताकि गलती से डिलीट न हो
-            if(confirm("क्या आप वाकई " + userData.name + " का रजिस्ट्रेशन रिजेक्ट/डिलीट करना चाहते हैं?")) {
-                localStorage.removeItem(key); // मेमोरी से डेटा डिलीट
-                alert("अकाउंट रिजेक्ट और डिलीट कर दिया गया है।");
-                loadStudents(); // लिस्ट रीफ्रेश करें
-            }
+            const u = JSON.parse(localStorage.getItem(key)); u.status = "approved";
+            localStorage.setItem(key, JSON.stringify(u)); loadStudents();
         }
 
         function logout() {
-            // सिर्फ लॉगिन टोकन हटाएं, स्टूडेंट्स का डेटा नहीं
-            localStorage.removeItem("isLoggedIn");
-            localStorage.removeItem("role");
-            localStorage.removeItem("currentUser");
+            localStorage.removeItem("isLoggedIn"); localStorage.removeItem("role"); localStorage.removeItem("currentUser");
             window.location.href = "login.html";
         }
     </script>
