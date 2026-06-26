@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGTS - Courses & Admin</title>
+    <title>CGTS Portal - Admin Advanced</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #f4f7f6; color: #333; padding-bottom: 50px; }
         header { background-color: #2c3e50; color: white; padding: 15px; text-align: center; position: relative;}
-        .container { max-width: 800px; margin: 30px auto; padding: 20px; }
+        .container { max-width: 950px; margin: 30px auto; padding: 20px; }
         
         /* कोर्स कार्ड स्टाइल */
         .course-card { 
@@ -33,14 +33,29 @@
         
         /* बटन स्टाइल्स */
         .btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .del-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .approve-btn { background: #2ecc71; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .del-btn { background: #b2bec3; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
         
-        /* व्यवस्थित टेबल */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #2c3e50; color: white; }
-        tr:hover { background-color: #f9f9f9; }
+        /* एडमिन एक्शन बटन्स */
+        .action-btn { border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; margin-right: 4px; color: white; }
+        .btn-activate { background-color: #2ecc71; } /* हरा */
+        .btn-activate:hover { background-color: #27ae60; }
+        .btn-block { background-color: #e67e22; } /* ऑरेंज */
+        .btn-block:hover { background-color: #d35400; }
+        .btn-delete { background-color: #e74c3c; } /* लाल */
+        .btn-delete:hover { background-color: #c0392b; }
+        
+        /* रिस्पांसिव टेबल स्टाइल */
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; background: white; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; font-size: 14px; }
+        th { background-color: #2c3e50; color: white; position: sticky; top: 0; }
+        tr:hover { background-color: #f5f6fa; }
+        
+        /* स्टेटस बैज */
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .bg-pending { background-color: #ffeaa7; color: #d35400; }
+        .bg-active { background-color: #c8f7dc; color: #1ebd60; }
+        .bg-blocked { background-color: #fab1a0; color: #e74c3c; }
     </style>
     <script>
         if (localStorage.getItem("isLoggedIn") !== "true") { window.location.href = "login.html"; }
@@ -48,7 +63,7 @@
 </head>
 <body>
     <header>
-        <h1>CGTS Portal</h1>
+        <h1>CGTS Management Portal</h1>
         <button onclick="localStorage.clear(); window.location.href='login.html';" style="position:absolute; right:15px; top:15px; background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:bold;">Logout</button>
     </header>
 
@@ -59,11 +74,11 @@
         <div id="course-list"></div>
 
         <div class="admin-section" id="admin-panel">
-            <h3 style="color:#e74c3c; margin-bottom: 15px;">👑 एडमिन कंट्रोल सेंटर</h3>
+            <h3 style="color:#e74c3c; margin-bottom: 15px;">👑 एडमिन एडवांस्ड कंट्रोल सेंटर</h3>
             
             <div class="tab-menu">
                 <button class="tab-btn active" onclick="switchTab('course-tab', this)">1. कोर्स मैनेजमेंट</button>
-                <button class="tab-btn" onclick="switchTab('student-tab', this)">2. स्टूडेंट रिक्वेस्ट्स (<span id="req-count">0</span>)</button>
+                <button class="tab-btn" onclick="switchTab('student-tab', this)">2. छात्र डेटाबेस एवं अथॉरिटी (<span id="req-count">0</span>)</button>
             </div>
 
             <div id="course-tab" class="tab-content active">
@@ -75,19 +90,23 @@
             </div>
 
             <div id="student-tab" class="tab-content">
-                <p style="color:#666; font-size:14px;">यहाँ उन छात्रों की लिस्ट है जिन्होंने मोबाइल से नया रजिस्ट्रेशन किया है:</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>छात्र का नाम</th>
-                            <th>मोबाइल नंबर</th>
-                            <th>स्टेटस</th>
-                            <th>अथॉरिटी एक्शन</th>
-                        </tr>
-                    </thead>
-                    <tbody id="student-table-body">
-                        </tbody>
-                </table>
+                <p style="color:#666; font-size:14px; margin-bottom: 10px;">पंजीकृत छात्रों की सूची और नियंत्रण कमांड्स:</p>
+                
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>छात्र का नाम</th>
+                                <th>मोबाइल (यूज़रनेम)</th>
+                                <th>पासवर्ड (Password)</th>
+                                <th>वर्तमान स्टेटस</th>
+                                <th>अथॉरिटी कमांड्स (Actions)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-table-body">
+                            </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -98,7 +117,6 @@
         
         if(isAdmin) document.getElementById("admin-panel").style.display = "block";
 
-        // डिफ़ॉल्ट डेटा सेट
         if(!localStorage.getItem("cgts_data")) {
             localStorage.setItem("cgts_data", JSON.stringify([{ id: "c1", name: "Assistant Teacher Recruitment", subjects: [] }]));
         }
@@ -111,12 +129,11 @@
                 list.innerHTML += `
                     <div class="course-card" onclick="window.location.href='subjects.html?courseId=${course.id}'">
                         <span class="course-title">📋 ${course.name}</span>
-                        ${isAdmin ? `<button class="del-btn" onclick="event.stopPropagation(); deleteCourse('${course.id}')">Delete</button>` : '➜'}
+                        ${isAdmin ? `<button class="del-btn" style="background:#e74c3c" onclick="event.stopPropagation(); deleteCourse('${course.id}')">Delete</button>` : '➜'}
                     </div>`;
             });
         }
 
-        // टैब बदलने का फंक्शन
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -125,7 +142,7 @@
             if(tabId === 'student-tab') loadStudents();
         }
 
-        // 🛡️ सिस्टेमेटिक स्टूडेंट रिक्वेस्ट लोड करने का फंक्शन
+        // 🛡️ एडवांस्ड स्टूडेंट डेटाबेस लोडर
         function loadStudents() {
             const tbody = document.getElementById("student-table-body");
             if(!tbody) return;
@@ -134,50 +151,62 @@
 
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
-                // सिर्फ 'user_' से शुरू होने वाली कुंजियों को ढूंढें
                 if (key && key.indexOf("user_") === 0) {
                     count++;
                     const userData = JSON.parse(localStorage.getItem(key));
                     
-                    let statusColor = "orange";
-                    let statusText = "पेंडिंग (Pending)";
-                    if (userData.status === "approved") {
-                        statusColor = "green";
-                        statusText = "Verified";
+                    let statusBadge = "";
+                    if (userData.status === "pending") {
+                        statusBadge = `<span class="badge bg-pending">Pending</span>`;
+                    } else if (userData.status === "approved") {
+                        statusBadge = `<span class="badge bg-active">Active</span>`;
+                    } else if (userData.status === "blocked") {
+                        statusBadge = `<span class="badge bg-blocked">Blocked</span>`;
                     }
+
+                    // डायनेमिक बटन जनरेशन स्टेटस के आधार पर
+                    let actionButtons = "";
+                    if (userData.status === "pending" || userData.status === "blocked") {
+                        actionButtons += `<button class="action-btn btn-activate" onclick="changeStatus('${key}', 'approved')">Activate</button>`;
+                    }
+                    if (userData.status === "approved") {
+                        actionButtons += `<button class="action-btn btn-block" onclick="changeStatus('${key}', 'blocked')">Block</button>`;
+                    }
+                    actionButtons += `<button class="action-btn btn-delete" onclick="deleteStudent('${key}')">Reject/Delete</button>`;
 
                     tbody.innerHTML += `
                         <tr>
                             <td><strong>${userData.name}</strong></td>
-                            <td>${userData.username}</td>
-                            <td style="color: ${statusColor}; font-weight:bold;">${statusText}</td>
-                            <td>
-                                ${userData.status === 'pending' ? 
-                                `<button class="approve-btn" onclick="verifyStudent('${key}')">Approve</button>` : '✅'}
-                                <button class="del-btn" onclick="rejectStudent('${key}')">Reject/Block</button>
-                            </td>
+                            <td style="font-family: monospace; font-size:15px;">${userData.username}</td>
+                            <td style="color:#7f8c8d; font-family: monospace;">${userData.password}</td>
+                            <td>${statusBadge}</td>
+                            <td>${actionButtons}</td>
                         </tr>`;
                 }
             }
             document.getElementById("req-count").innerText = count;
             if (count === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">अभी कोई नया रजिस्ट्रेशन रिकॉर्ड नहीं मिला।</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#999;">डेटाबेस में कोई छात्र पंजीकृत नहीं है।</td></tr>`;
             }
         }
 
-        function verifyStudent(key) {
+        // स्टेटस बदलने का कंबाइंड फंक्शन (Activate / Block)
+        function changeStatus(key, newStatus) {
             const userData = JSON.parse(localStorage.getItem(key));
-            userData.status = "approved";
+            userData.status = newStatus;
             localStorage.setItem(key, JSON.stringify(userData));
-            alert(userData.name + " को वेरीफाई कर दिया गया है!");
+            
+            const msg = newStatus === 'approved' ? 'एक्टिवेट (सक्रिय)' : 'ब्लॉक (प्रतिबंधित)';
+            alert(userData.name + " का अकाउंट " + msg + " कर दिया गया है!");
             loadStudents();
         }
 
-        function rejectStudent(key) {
+        // पूरी तरह डिलीट/रिजेक्ट करने का फंक्शन
+        function deleteStudent(key) {
             const userData = JSON.parse(localStorage.getItem(key));
-            if(confirm("क्या आप वाकई " + userData.name + " को हटाना/ब्लॉक करना चाहते हैं?")) {
+            if(confirm("सावधान! क्या आप सचमुच " + userData.name + " का डेटाबेस रिकॉर्ड हमेशा के लिए डिलीट/रिजेक्ट करना चाहते हैं?")) {
                 localStorage.removeItem(key);
-                alert("छात्र का डेटा हटा दिया गया है।");
+                alert("छात्र का रिकॉर्ड डिलीट कर दिया गया है।");
                 loadStudents();
             }
         }
@@ -199,7 +228,6 @@
             }
         }
 
-        // शुरुआत में लोड करें
         renderCourses();
         if(isAdmin) loadStudents();
     </script>
