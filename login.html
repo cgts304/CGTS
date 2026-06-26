@@ -39,13 +39,16 @@
         </div>
     </div>
 
+                    }
+         </div>
+
     <script>
         function checkLogin() {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
             const errorText = document.getElementById('error-text');
 
-            // 1. एडमिन लॉगिन
+            // 1. एडमिन लॉगिन चेक
             if (user === "admin" && pass === "12345") {
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("role", "admin");
@@ -60,12 +63,16 @@
             if (savedUser) {
                 const userData = JSON.parse(savedUser);
                 
+                // पासवर्ड मैच होने पर स्टेटस चेक करना
                 if (userData.password === pass) {
                     if (userData.status === "approved") {
                         localStorage.setItem("isLoggedIn", "true");
                         localStorage.setItem("role", "student");
                         localStorage.setItem("currentUser", userData.name);
                         window.location.href = "index.html";
+                    } else if (userData.status === "blocked") {
+                        errorText.style.display = 'block';
+                        errorText.innerText = "आपका अकाउंट एडमिन द्वारा ब्लॉक कर दिया गया है!";
                     } else {
                         errorText.style.display = 'block';
                         errorText.innerText = "आपका अकाउंट अभी एडमिन द्वारा वेरीफाई नहीं किया गया है।";
@@ -80,5 +87,8 @@
             }
         }
     </script>
+</body>
+</html>
+
 </body>
 </html>
