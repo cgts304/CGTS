@@ -3,57 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGTS - Subjects</title>
+    <title>CGTS - Subjects Dashboard</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f4f7f6; padding-bottom: 50px; }
-        header { background-color: #3498db; color: white; padding: 15px; text-align: center; position: relative; }
-        .container { max-width: 800px; margin: 30px auto; padding: 20px; }
-        .back-btn { position: absolute; left: 15px; top: 15px; background: #2c3e50; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; text-decoration: none; font-weight: bold;}
-        .subject-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #2c3e50;}
-        .admin-section { display: none; background: #fff; padding: 20px; border-radius: 8px; margin-top: 40px; border: 2px dashed #e74c3c; }
-        .form-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        .btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .del-btn { background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: #f0f4f8; padding-bottom: 50px; }
+        
+        /* 🌟 अट्रैक्टिव हेडर */
+        header { 
+            background: linear-gradient(135deg, #1e3c72, #2a5298); 
+            color: white; 
+            padding: 20px 15px; 
+            text-align: center; 
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .back-btn { 
+            position: absolute; left: 15px; top: 22px; 
+            background: rgba(255, 255, 255, 0.2); color: white; 
+            border: none; padding: 6px 14px; border-radius: 20px; 
+            cursor: pointer; text-decoration: none; font-weight: bold;
+            font-size: 14px; transition: 0.3s;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, 0.4); }
+        
+        .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
+        
+        /* 🎛️ अट्रैक्टिव ग्रिड लेआउट */
+        .subject-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); 
+            gap: 15px; 
+            margin-top: 20px; 
+        }
+
+        /* ✨ सब्जेक्ट कार्ड्स का प्रीमियम डिज़ाइन */
+        .subject-card { 
+            background: white; 
+            padding: 25px 15px; 
+            border-radius: 15px; 
+            text-align: center; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 5px solid #ddd;
+        }
+        .subject-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1); 
+        }
+        
+        /* आइकॉन स्टाइल */
+        .sub-icon { 
+            font-size: 36px; 
+            margin-bottom: 12px; 
+        }
+        .sub-name { 
+            font-size: 16px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+        }
+
+        /* 🎨 हर सब्जेक्ट के लिए अट्रैक्टिव कलर्स */
+        .card-1 { border-color: #ff7675; } /* बाल विकास */
+        .card-2 { border-color: #74b9ff; } /* हिंदी */
+        .card-3 { border-color: #a29bfe; } /* अंग्रेजी */
+        .card-4 { border-color: #55efc4; } /* पर्यावरण */
+        .card-5 { border-color: #ffeaa7; } /* गणित */
+        .card-6 { border-color: #fd79a8; } /* कंप्यूटर */
+        .card-7 { border-color: #fdcb6e; } /* सामान्य ज्ञान */
+        .card-8 { border-color: #6c5ce7; background: linear-gradient(145deg, #ffffff, #f1f0ff); } /* संपूर्ण */
+
+        .card-8 .sub-name { color: #6c5ce7; font-size: 18px; }
+
+        /* 👑 एडमिन के लिए डिलीट बटन */
+        .del-btn { 
+            position: absolute; top: 8px; right: 8px;
+            background: #ff7675; color: white; border: none; 
+            padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 11px;
+        }
+
+        /* 📝 एडमिन फॉर्म */
+        .admin-section { display: none; background: #fff; padding: 20px; border-radius: 12px; margin-top: 40px; border: 2px dashed #e74c3c; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        .btn { background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
+
     <header>
-        <a href="index.html" class="back-btn">⬅ Back</a>
-        <h1 id="course-title-display">Subjects</h1>
+        <a href="index.html" class="back-btn">⬅ पीछे जाएँ</a>
+        <h1 id="course-title-display">Assistant Teacher Recruitment</h1>
     </header>
 
     <div class="container">
-        <h2 style="color:#2c3e50;">विषय चुनें 📚</h2>
-        <div id="subject-list" style="margin-top:20px;"></div>
+        <h2 style="color:#2c3e50; text-align: center; margin-bottom: 10px; font-size: 22px;">अपना विषय चुनें 📚</h2>
+        <p style="text-align:center; color:#7f8c8d; font-size:14px; margin-bottom:20px;">टेस्ट देने के लिए किसी भी विषय पर क्लिक करें</p>
+        
+        <!-- ग्रिड डैशबोर्ड -->
+        <div id="subject-list" class="subject-grid"></div>
 
+        <!-- एडमिन सेक्शन (यदि भविष्य में कोई और सब्जेक्ट जोड़ना चाहें) -->
         <div class="admin-section" id="admin-panel">
             <h3 style="color:#e74c3c; margin-bottom:15px;">👑 एडमिन विषय मैनेजमेंट</h3>
             <div class="form-group">
-                <input type="text" id="sub-name" placeholder="उदा. Mathematics">
-                <button class="btn" style="background:#2ecc71; margin-top:10px;" onclick="addSubject()">नया विषय जोड़ें</button>
+                <input type="text" id="sub-name" placeholder="उदा. नया विषय का नाम">
+                <button class="btn" onclick="addSubject()">नया विषय जोड़ें</button>
             </div>
         </div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const courseId = urlParams.get('courseId');
+        const courseId = urlParams.get('courseId') || "c1"; // डिफ़ॉल्ट कोर्स आईडी c1
         const isAdmin = localStorage.getItem("role") === "admin";
         if(isAdmin) document.getElementById("admin-panel").style.display = "block";
 
+        // यदि डेटाबेस खाली है तो आपके दिए हुए 8 विषय ऑटोमैटिक लोड हो जाएंगे
+        if(!localStorage.getItem("cgts_data")) {
+            localStorage.setItem("cgts_data", JSON.stringify([{ id: "c1", name: "Assistant Teacher Recruitment", subjects: [] }]));
+        }
+
         let globalData = JSON.parse(localStorage.getItem("cgts_data"));
         let currentCourse = globalData.find(c => c.id === courseId);
+        if(!currentCourse) currentCourse = globalData[0];
+
         document.getElementById("course-title-display").innerText = currentCourse.name;
+
+        // 8 मुख्य विषय (आइकॉन और स्टाइल क्लास के साथ)
+        const defaultSubjects = [
+            { name: "1. बाल विकास", icon: "👶", class: "card-1" },
+            { name: "2. हिंदी", icon: "✍️", class: "card-2" },
+            { name: "3. अंग्रेजी", icon: "🔤", class: "card-3" },
+            { name: "4. पर्यावरण", icon: "🌱", class: "card-4" },
+            { name: "5. गणित", icon: "🔢", class: "card-5" },
+            { name: "6. कंप्यूटर", icon: "💻", class: "card-6" },
+            { name: "7. सामान्य ज्ञान", icon: "🌍", class: "card-7" },
+            { name: "8. संपूर्ण टेस्ट", icon: "🏆", class: "card-8" }
+        ];
+
+        // अगर इस कोर्स में पहले से सब्जेक्ट्स नहीं हैं, तो डिफ़ॉल्ट 8 सब्जेक्ट्स डाल दें
+        if (currentCourse.subjects.length === 0) {
+            defaultSubjects.forEach((sub, index) => {
+                currentCourse.subjects.push({
+                    id: "sub_default_" + (index + 1),
+                    name: sub.name,
+                    icon: sub.icon,
+                    cssClass: sub.class,
+                    tests: []
+                });
+            });
+            localStorage.setItem("cgts_data", JSON.stringify(globalData));
+        }
 
         function renderSubjects() {
             const list = document.getElementById("subject-list");
             list.innerHTML = "";
+            
             currentCourse.subjects.forEach(sub => {
+                // पुरानी फाइल्स से मैचिंग के लिए सुरक्षित क्लास और आइकॉन ढूंढना
+                let currentClass = sub.cssClass || "card-1";
+                let currentIcon = sub.icon || "📚";
+
                 list.innerHTML += `
-                    <div class="subject-card" onclick="window.location.href='tests.html?courseId=${courseId}&subId=${sub.id}'">
-                        <strong>${sub.name}</strong>
-                        ${isAdmin ? `<button class="del-btn" onclick="event.stopPropagation(); deleteSubject('${sub.id}')">Delete</button>` : '➜'}
+                    <div class="subject-card ${currentClass}" onclick="window.location.href='tests.html?courseId=${courseId}&subId=${sub.id}'">
+                        ${isAdmin ? `<button class="del-btn" onclick="event.stopPropagation(); deleteSubject('${sub.id}')">X</button>` : ''}
+                        <div class="sub-icon">${currentIcon}</div>
+                        <div class="sub-name">${sub.name}</div>
                     </div>`;
             });
         }
@@ -61,18 +181,26 @@
         function addSubject() {
             const name = document.getElementById("sub-name").value.trim();
             if(!name) return;
-            currentCourse.subjects.push({ id: "sub_" + Date.now(), name: name, tests: [] });
+            currentCourse.subjects.push({ 
+                id: "sub_" + Date.now(), 
+                name: name, 
+                icon: "📚", 
+                cssClass: "card-1", 
+                tests: [] 
+            });
             localStorage.setItem("cgts_data", JSON.stringify(globalData));
+            document.getElementById("sub-name").value = "";
             renderSubjects();
         }
 
         function deleteSubject(subId) {
-            if(confirm("विषय डिलीट करें?")) {
+            if(confirm("क्या आप इस विषय को हटाना चाहते हैं?")) {
                 currentCourse.subjects = currentCourse.subjects.filter(s => s.id !== subId);
                 localStorage.setItem("cgts_data", JSON.stringify(globalData));
                 renderSubjects();
             }
         }
+
         renderSubjects();
     </script>
 </body>
