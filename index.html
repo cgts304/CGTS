@@ -1,173 +1,115 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <script>
-    // चेक करें कि क्या यूजर ने लॉगिन किया है
-    if (localStorage.getItem("isLoggedIn") !== "true") {
-        // अगर लॉगिन नहीं है, तो उसे जबर्दस्ती लॉगिन पेज पर भेज दें
-        window.location.href = "login.html";
-    }
-    </script>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGTS - Online Test Series</title>
+    <title>CGTS - Home</title>
     <style>
-        /* Basic Reset and Styling */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f4f7f6;
-            color: #333;
-        }
-
-        /* Header Navigation */
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            font-size: 24px;
-            letter-spacing: 1px;
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .welcome-text {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .welcome-text h2 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        /* Test Cards Grid */
-        .test-list {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        @media(min-width: 600px) {
-            .test-list {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .test-card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-left: 5px solid #3498db;
-            transition: transform 0.2s;
-        }
-
-        .test-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .test-card h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .test-card p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        /* Start Button */
-        .btn-start {
-            display: inline-block;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background 0.2s;
-            text-align: center;
-            width: 100%;
-        }
-
-        .btn-start:hover {
-            background-color: #2980b9;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #777;
-            font-size: 14px;
-            margin-top: 40px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f7f6; color: #333; }
+        header { background-color: #2c3e50; color: white; padding: 15px; text-align: center; position: relative;}
+        .container { max-width: 800px; margin: 30px auto; padding: 20px; }
+        .test-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #3498db; }
+        .btn { display: inline-block; background: #3498db; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; width: 100%; text-align: center; }
+        
+        /* Admin Section Styling */
+        #admin-panel { display: none; background: white; padding: 20px; border-radius: 8px; margin-top: 30px; border: 2px solid #e74c3c; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f8f9fa; }
+        .approve-btn { background: #2ecc71; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; font-weight: bold;}
     </style>
+    <script>
+        if (localStorage.getItem("isLoggedIn") !== "true") {
+            window.location.href = "login.html";
+        }
+    </script>
 </head>
 <body>
 
     <header>
         <h1>CGTS Test Series</h1>
+        <button onclick="logout()" style="position:absolute; right:15px; top:15px; background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Logout</button>
     </header>
-<div style="text-align: right; max-width: 800px; margin: 10px auto; padding: 0 20px;">
-    <button onclick="logout()" style="background-color: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-        Logout (बाहर निकलें)
-    </button>
-</div>
 
-<script>
-    function logout() {
-        localStorage.removeItem("isLoggedIn"); // लॉगिन डेटा डिलीट करें
-        window.location.href = "login.html";   // वापस लॉगिन पेज पर भेजें
-    }
-</script>
-    
     <div class="container">
-        <div class="welcome-text">
-            <h2>अपनी तैयारी की जाँच करें</h2>
-            <p>नीचे दिए गए टेस्ट में से किसी एक को चुनें और शुरू करें।</p>
-        </div>
-
-        <div class="test-list">
-            
+        <h2>नमस्ते, <span id="user-display"></span></h2>
+        
+        <div style="margin-top:20px;">
             <div class="test-card">
                 <h3>General Knowledge - Mock Test 1</h3>
-                <p>कुल प्रश्न: 10 | समय: 10 मिनट</p>
-                <a href="quiz.html" class="btn-start">Start Test</a>
+                <p>कुल प्रश्न: 3 | समय: 10 मिनट</p>
+                <a href="quiz.html" class="btn">Start Test</a>
             </div>
+        </div>
 
-            <div class="test-card">
-                <h3>Mathematics - Practice Test</h3>
-                <p>कुल प्रश्न: 15 | समय: 15 मिनट</p>
-                <a href="#" class="btn-start" onclick="alert('यह टेस्ट जल्द ही आ रहा है!')">Coming Soon</a>
-            </div>
-
+        <div id="admin-panel">
+            <h3 style="color:#e74c3c;">👑 एडमिन अथॉरिटी पैनल</h3>
+            <p>यहाँ से नए स्टूडेंट्स का रजिस्ट्रेशन वेरीफाई करें:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>नाम</th>
+                        <th>यूज़रनेम</th>
+                        <th>स्टेटस</th>
+                        <th>अथॉरिटी</th>
+                    </tr>
+                </thead>
+                <tbody id="student-table-body">
+                    </tbody>
+            </table>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 CGTS. All Rights Reserved.</p>
-    </footer>
+    <script>
+        document.getElementById("user-display").innerText = localStorage.getItem("currentUser");
 
+        // अगर एडमिन लॉगिन है तो एडमिन पैनल दिखाओ
+        if(localStorage.getItem("role") === "admin") {
+            document.getElementById("admin-panel").style.display = "block";
+            loadStudents();
+        }
+
+        function loadStudents() {
+            const tbody = document.getElementById("student-table-body");
+            tbody.innerHTML = "";
+
+            // LocalStorage से सभी स्टूडेंट्स को ढूंढना
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith("user_")) {
+                    const userData = JSON.parse(localStorage.getItem(key));
+                    
+                    const row = `<tr>
+                        <td>${userData.name}</td>
+                        <td>${userData.username}</td>
+                        <td style="color: ${userData.status === 'pending' ? 'orange' : 'green'}; font-weight:bold;">
+                            ${userData.status.toUpperCase()}
+                        </td>
+                        <td>
+                            ${userData.status === 'pending' ? 
+                            `<button class="approve-btn" onclick="verifyStudent('${key}')">Verify (Approve)</button>` : 
+                            `✅ Verified`}
+                        </td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                }
+            }
+        }
+
+        // स्टूडेंट को वेरीफाई करने का फंक्शन
+        function verifyStudent(key) {
+            const userData = JSON.parse(localStorage.getItem(key));
+            userData.status = "approved"; // स्टेटस बदला
+            localStorage.setItem(key, JSON.stringify(userData)); // वापस सेव किया
+            alert(userData.name + " को वेरीफाई कर दिया गया है!");
+            loadStudents(); // लिस्ट अपडेट करें
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
 </body>
 </html>
-
-
