@@ -27,8 +27,8 @@
                 <input type="text" id="reg-name" placeholder="आपका नाम" required>
             </div>
             <div class="input-group">
-                <label>यूज़रनेम / मोबाइल नंबर</label>
-                <input type="text" id="reg-username" placeholder="Username चुनें" required>
+                <label>मोबाइल नंबर</label>
+                <input type="tel" id="reg-mobile" placeholder="10 अंकों का मोबाइल नंबर" maxlength="10" required>
             </div>
             <div class="input-group">
                 <label>पासवर्ड</label>
@@ -44,27 +44,33 @@
     <script>
         function saveRegistration() {
             const name = document.getElementById('reg-name').value;
-            const username = document.getElementById('reg-username').value;
+            const mobile = document.getElementById('reg-mobile').value;
             const password = document.getElementById('reg-password').value;
 
-            if(name === "" || username === "" || password === "") {
+            if(name === "" || mobile === "" || password === "") {
                 alert("कृपया सभी डिटेल्स भरें!");
                 return;
             }
 
-            if(localStorage.getItem("user_" + username)) {
-                alert("यह यूज़रनेम पहले से मौजूद है!");
+            if(mobile.length !== 10) {
+                alert("कृपया सही 10 अंकों का मोबाइल नंबर डालें!");
+                return;
+            }
+
+            // मोबाइल नंबर को ही चाबी (Key) बनाकर सेव कर रहे हैं
+            if(localStorage.getItem("user_" + mobile)) {
+                alert("यह मोबाइल नंबर पहले से रजिस्टर्ड है!");
                 return;
             }
 
             const studentData = {
                 name: name,
-                username: username,
+                username: mobile, // बैकएंड में मोबाइल नंबर ही यूजरनेम का काम करेगा
                 password: password,
-                status: "pending" // शुरुआत में स्टेटस पेंडिंग रहेगा
+                status: "pending"
             };
 
-            localStorage.setItem("user_" + username, JSON.stringify(studentData));
+            localStorage.setItem("user_" + mobile, JSON.stringify(studentData));
             
             alert("रजिस्ट्रेशन सफल! एडमिन द्वारा वेरीफाई होने के बाद आप लॉगिन कर पाएंगे।");
             window.location.href = "login.html";
