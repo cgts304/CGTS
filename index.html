@@ -12,12 +12,17 @@
         .test-card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #3498db; }
         .btn { display: inline-block; background: #3498db; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; width: 100%; text-align: center; }
         
-        /* Admin Section Styling */
-        #admin-panel { display: none; background: white; padding: 20px; border-radius: 8px; margin-top: 30px; border: 2px solid #e74c3c; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #f8f9fa; }
-        .approve-btn { background: #2ecc71; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; font-weight: bold;}
+        /* 👑 एडमिन पैनल स्टाइलिंग */
+        #admin-panel { display: none; background: white; padding: 20px; border-radius: 8px; margin-top: 30px; border: 2px solid #e74c3c; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; font-size: 14px; }
+        th { background-color: #2c3e50; color: white; }
+        
+        /* बटन कलर्स */
+        .approve-btn { background: #2ecc71; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; margin-right: 5px; }
+        .approve-btn:hover { background: #27ae60; }
+        .reject-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        .reject-btn:hover { background: #c0392b; }
     </style>
     <script>
         if (localStorage.getItem("isLoggedIn") !== "true") {
@@ -29,7 +34,7 @@
 
     <header>
         <h1>CGTS Test Series</h1>
-        <button onclick="logout()" style="position:absolute; right:15px; top:15px; background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Logout</button>
+        <button onclick="logout()" style="position:absolute; right:15px; top:15px; background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-weight:bold;">Logout</button>
     </header>
 
     <div class="container">
@@ -44,15 +49,15 @@
         </div>
 
         <div id="admin-panel">
-            <h3 style="color:#e74c3c;">👑 एडमिन अथॉरिटी पैनल</h3>
-            <p>यहाँ से नए स्टूडेंट्स का रजिस्ट्रेशन वेरीफाई करें:</p>
+            <h3 style="color:#e74c3c; margin-bottom: 5px;">👑 एड民 अथॉरिटी पैनल</h3>
+            <p style="font-size: 14px; color: #666;">यहाँ से नए स्टूडेंट्स का मोबाइल नंबर वेरीफाई करें या रिजेक्ट करें:</p>
             <table>
                 <thead>
                     <tr>
                         <th>नाम</th>
-                        <th>यूज़रनेम</th>
+                        <th>मोबाइल नंबर</th>
                         <th>स्टेटस</th>
-                        <th>अथॉरिटी</th>
+                        <th>अथॉरिटी एक्शन</th>
                     </tr>
                 </thead>
                 <tbody id="student-table-body">
@@ -64,7 +69,7 @@
     <script>
         document.getElementById("user-display").innerText = localStorage.getItem("currentUser");
 
-        // अगर एडमिन लॉगिन है तो एडमिन पैनल दिखाओ
+        // अगर एडमिन लॉगिन है तभी पैनल दिखेगा
         if(localStorage.getItem("role") === "admin") {
             document.getElementById("admin-panel").style.display = "block";
             loadStudents();
@@ -73,41 +78,67 @@
         function loadStudents() {
             const tbody = document.getElementById("student-table-body");
             tbody.innerHTML = "";
+            let hasRecords = false;
 
-            // LocalStorage से सभी स्टूडेंट्स को ढूंढना
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key.startsWith("user_")) {
+                    hasRecords = true;
                     const userData = JSON.parse(localStorage.getItem(key));
                     
+                    // स्टेटस के हिसाब से रंग तय करना
+                    let statusColor = "orange";
+                    let statusText = "पेंडिंग (Pending)";
+                    if (userData.status === "approved") {
+                        statusColor = "green";
+                        statusText = "वेरीफाइड (Verified)";
+                    }
+
                     const row = `<tr>
-                        <td>${userData.name}</td>
+                        <td><strong>${userData.name}</strong></td>
                         <td>${userData.username}</td>
-                        <td style="color: ${userData.status === 'pending' ? 'orange' : 'green'}; font-weight:bold;">
-                            ${userData.status.toUpperCase()}
-                        </td>
+                        <td style="color: ${statusColor}; font-weight:bold;">${statusText}</td>
                         <td>
                             ${userData.status === 'pending' ? 
-                            `<button class="approve-btn" onclick="verifyStudent('${key}')">Verify (Approve)</button>` : 
-                            `✅ Verified`}
+                            `<button class="approve-btn" onclick="verifyStudent('${key}')">Verify</button>
+                             <button class="reject-btn" onclick="rejectStudent('${key}')">Reject</button>` : 
+                            `✅ चालू है | <button class="reject-btn" style="padding:3px 8px; font-size:12px;" onclick="rejectStudent('${key}')">Block</button>`}
                         </td>
                     </tr>`;
                     tbody.innerHTML += row;
                 }
             }
+
+            if(!hasRecords) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999;">अभी कोई नया रजिस्ट्रेशन नहीं हुआ है।</td></tr>`;
+            }
         }
 
-        // स्टूडेंट को वेरीफाई करने का फंक्शन
+        // 1. स्टूडेंट को Approve/Verify करने का फंक्शन
         function verifyStudent(key) {
             const userData = JSON.parse(localStorage.getItem(key));
-            userData.status = "approved"; // स्टेटस बदला
-            localStorage.setItem(key, JSON.stringify(userData)); // वापस सेव किया
-            alert(userData.name + " को वेरीफाई कर दिया गया है!");
-            loadStudents(); // लिस्ट अपडेट करें
+            userData.status = "approved"; 
+            localStorage.setItem(key, JSON.stringify(userData)); 
+            alert(userData.name + " का अकाउंट चालू (Verify) कर दिया गया है!");
+            loadStudents(); 
+        }
+
+        // 2. स्टूडेंट को Reject/Delete करने का फंक्शन
+        function rejectStudent(key) {
+            const userData = JSON.parse(localStorage.getItem(key));
+            // कन्फर्मेशन पूछें ताकि गलती से डिलीट न हो
+            if(confirm("क्या आप वाकई " + userData.name + " का रजिस्ट्रेशन रिजेक्ट/डिलीट करना चाहते हैं?")) {
+                localStorage.removeItem(key); // मेमोरी से डेटा डिलीट
+                alert("अकाउंट रिजेक्ट और डिलीट कर दिया गया है।");
+                loadStudents(); // लिस्ट रीफ्रेश करें
+            }
         }
 
         function logout() {
-            localStorage.clear();
+            // सिर्फ लॉगिन टोकन हटाएं, स्टूडेंट्स का डेटा नहीं
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("role");
+            localStorage.removeItem("currentUser");
             window.location.href = "login.html";
         }
     </script>
